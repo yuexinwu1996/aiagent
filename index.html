@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>服务市场 AI Agent 工作台</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body{font-family:'Noto Sans SC',system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif}
+    .conv-active{background-color:#eef2ff;border-color:#c7d2fe;box-shadow:0 0 0 1px rgba(129,140,248,.45)}
+    .chat-scroll::-webkit-scrollbar{width:4px}
+    .chat-scroll::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+
+<!-- HEADER -->
+<header class="w-full bg-gradient-to-r from-indigo-50 via-sky-50 to-indigo-50 border-b border-indigo-100 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="h-14 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-base font-bold text-indigo-700">抖店 · 服务市场</span>
+        <span class="text-xs text-slate-400">|</span>
+        <span class="text-sm text-slate-600">AI Agent 工作台</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-xs text-slate-500">陈掌柜の小店</span>
+        <div class="h-7 w-7 rounded-full bg-white text-xs font-semibold text-indigo-600 border border-indigo-100 shadow-sm flex items-center justify-center">陈</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="flex-1">
+<section class="max-w-7xl mx-auto px-4 mt-4 pb-10">
+<div class="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden">
+
+  <!-- TOP BAR -->
+  <div class="border-b border-slate-100 px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-sky-500 text-xs text-white" id="topAv">🤖</span>
+      <div>
+        <p class="text-sm font-semibold text-slate-900" id="topT">服务市场AI助手</p>
+        <p class="text-xs text-slate-500" id="topD">需求收集 · Agent推荐</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 text-xs" id="topTag">
+      <span class="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2 py-1 text-indigo-600 border border-indigo-100"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>官方</span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-12 divide-x divide-slate-100" style="min-height:640px">
+
+    <!-- ====== LEFT SIDEBAR ====== -->
+    <aside class="col-span-3 bg-slate-50/60 flex flex-col">
+      <div class="px-4 py-3 border-b border-slate-100"><h2 class="text-sm font-semibold text-slate-900">会话列表</h2></div>
+      <div class="px-3 pt-3 pb-4 space-y-2 overflow-y-auto flex-1" id="convList">
+
+        <button data-conv="assistant" class="w-full text-left px-3 py-2.5 rounded-xl border border-indigo-200 bg-gradient-to-r from-indigo-50 to-sky-50 flex flex-col gap-0.5 text-sm shadow-sm conv-active">
+          <div class="flex items-center justify-between"><span class="font-semibold text-slate-800 text-[13px]">📌 服务市场AI助手</span><span class="text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700">官方</span></div>
+          <p class="text-[11px] text-slate-500 truncate">需求收集与Agent推荐</p>
+        </button>
+
+        <button data-conv="selection" class="w-full text-left px-3 py-2.5 rounded-xl border border-transparent flex flex-col gap-0.5 text-sm bg-white hover:bg-slate-50">
+          <div class="flex items-center justify-between"><span class="font-semibold text-slate-800 text-[13px]">🎯 AI商机选品</span><span class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">运行中</span></div>
+          <p class="text-[11px] text-slate-500 truncate">商机扫描 · 智能选品 · 一键铺货</p>
+        </button>
+
+        <button data-conv="diagnosis" class="w-full text-left px-3 py-2.5 rounded-xl border border-transparent flex flex-col gap-0.5 text-sm bg-white hover:bg-slate-50">
+          <div class="flex items-center justify-between"><span class="font-semibold text-slate-800 text-[13px]">🔍 商品诊断&优化</span><span class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">运行中</span></div>
+          <p class="text-[11px] text-slate-500 truncate">全店体检 · 批量优化 · 标签迁移</p>
+        </button>
+
+        <button data-conv="images" class="w-full text-left px-3 py-2.5 rounded-xl border border-transparent flex flex-col gap-0.5 text-sm bg-white hover:bg-slate-50">
+          <div class="flex items-center justify-between"><span class="font-semibold text-slate-800 text-[13px]">🎨 AI商品套图生成</span><span class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">运行中</span></div>
+          <p class="text-[11px] text-slate-500 truncate">爆款图复刻 · 全套图生成</p>
+        </button>
+
+        <button data-conv="reviews" class="w-full text-left px-3 py-2.5 rounded-xl border border-transparent flex flex-col gap-0.5 text-sm bg-white hover:bg-slate-50">
+          <div class="flex items-center justify-between"><span class="font-semibold text-slate-800 text-[13px]">💬 评论卖点分析</span><span class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">运行中</span></div>
+          <p class="text-[11px] text-slate-500 truncate">卖点挖掘 · 词云生成 · 跨Agent联动</p>
+        </button>
+
+      </div>
+    </aside>
+
+    <!-- ====== MIDDLE CHAT ====== -->
+    <section class="col-span-6 bg-white flex flex-col">
+      <div class="px-4 pt-3 pb-2 border-b border-slate-100">
+        <p class="text-sm font-semibold text-slate-900">当前会话 · <span id="curLabel">服务市场AI助手</span></p>
+      </div>
+
+      <div class="flex-1 overflow-y-auto chat-scroll px-4 pt-4 pb-3 text-[13px]" id="panels">
+
+        <!-- ========== 服务市场AI助手 ========== -->
+        <div data-panel="assistant" class="space-y-5">
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-sky-500 text-xs text-white">🤖</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">服务市场AI助手</p>
+              <div class="inline-block rounded-2xl bg-slate-50 px-4 py-3 border border-slate-100 leading-relaxed">你好！我是服务市场AI助手。<br/><br/>我可以根据你的经营需求，帮你匹配最合适的AI Agent应用。请告诉我你目前最想解决的问题？</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 justify-end">
+            <div class="max-w-[72%] text-right"><p class="text-xs text-slate-400 mb-1">陈</p>
+              <div class="inline-block rounded-2xl bg-indigo-500 px-4 py-3 text-white shadow-sm text-left leading-relaxed">我是做无货源的，主要四个问题：不知道选什么品、上架的品动销率低、商品图片不好看点击率差、不知道消费者到底在乎什么卖点。</div>
+            </div>
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-500 text-[11px] font-semibold text-white">陈</div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-sky-500 text-xs text-white">🤖</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">服务市场AI助手</p>
+              <div class="inline-block rounded-2xl bg-white px-4 py-3 border border-slate-100 shadow-sm leading-relaxed max-w-full">
+                <div class="mb-3 p-2.5 rounded-lg bg-indigo-50 border border-indigo-100 text-[12px] text-slate-700">
+                  <p class="font-medium mb-1">🧠 需求拆解：</p>
+                  <p>1. 选品 → 商机发现+智能选品</p>
+                  <p>2. 动销 → 商品诊断+批量优化</p>
+                  <p>3. 图片 → 爆款图复刻+套图生成</p>
+                  <p>4. 卖点 → 评论分析+内容策略</p>
+                </div>
+                <p class="font-semibold mb-2">为你匹配到4个AI Agent：</p>
+                <div class="space-y-2">
+                  <div class="flex items-start gap-2 p-2.5 rounded-lg bg-slate-50 border border-slate-100"><span>🎯</span><div class="flex-1"><p class="font-medium text-slate-800 text-[12px]">AI商机选品Agent</p><p class="text-[11px] text-slate-500">全网扫描商机 → 匹配画像 → 货源方案 → 一键铺货</p><p class="text-[11px] text-emerald-600 mt-0.5">✅ 已开通</p></div></div>
+                  <div class="flex items-start gap-2 p-2.5 rounded-lg bg-slate-50 border border-slate-100"><span>🔍</span><div class="flex-1"><p class="font-medium text-slate-800 text-[12px]">AI商品诊断&优化Agent</p><p class="text-[11px] text-slate-500">全店体检 → 分组诊断 → 批量优化 → 标签迁移追踪</p><p class="text-[11px] text-emerald-600 mt-0.5">✅ 已开通</p></div></div>
+                  <div class="flex items-start gap-2 p-2.5 rounded-lg bg-slate-50 border border-slate-100"><span>🎨</span><div class="flex-1"><p class="font-medium text-slate-800 text-[12px]">AI商品套图生成Agent</p><p class="text-[11px] text-slate-500">爆款图采集 → 风格复刻 → 全套图生成 → 一键替换</p><p class="text-[11px] text-emerald-600 mt-0.5">✅ 已开通</p></div></div>
+                  <div class="flex items-start gap-2 p-2.5 rounded-lg bg-slate-50 border border-slate-100"><span>💬</span><div class="flex-1"><p class="font-medium text-slate-800 text-[12px]">评论卖点分析Agent</p><p class="text-[11px] text-slate-500">评论挖掘 → 卖点词云 → 跨Agent联动优化标题/套图/属性</p><p class="text-[11px] text-emerald-600 mt-0.5">✅ 已开通</p></div></div>
+                </div>
+                <p class="mt-3 text-[12px] text-slate-600">点击左侧会话列表可直接进入对应Agent。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== AI商机选品Agent ========== -->
+        <div data-panel="selection" class="space-y-5 hidden">
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-xs text-white">🎯</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">AI商机选品Agent · 09:15</p>
+              <div class="inline-block rounded-2xl bg-white px-4 py-3 border border-slate-100 shadow-sm leading-relaxed max-w-full">
+                <div class="mb-2 p-2.5 rounded-lg bg-emerald-50 border border-emerald-100 text-[12px] text-emerald-800">✅ 已通过API自动读取你的店铺数据，画像建档完成</div>
+                <p class="font-medium mb-2">📊 系统生成的选品策略：</p>
+                <div class="text-[12px] space-y-1 text-slate-700 mb-3">
+                  <p>• 主攻类目：家居收纳、厨房小工具、浴室用品</p>
+                  <p>• 价格带：19.9-49.9元</p>
+                  <p>• 日上新：8款/天（工作日）</p>
+                  <p>• 选品倾向：搜索热度上升+竞品<50家的蓝海品</p>
+                </div>
+                <p class="text-[12px] text-slate-700">以上是基于你历史销售数据生成的策略，<span class="font-medium">需要调整吗？</span></p>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 justify-end">
+            <div class="max-w-[72%] text-right"><p class="text-xs text-slate-400 mb-1">陈</p>
+              <div class="inline-block rounded-2xl bg-indigo-500 px-4 py-3 text-white shadow-sm text-left leading-relaxed">价格带调到15-50，其他没问题。</div>
+            </div>
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-500 text-[11px] font-semibold text-white">陈</div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-xs text-white">🎯</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">AI商机选品Agent · 09:16</p>
+              <div class="inline-block rounded-2xl bg-slate-50 px-4 py-3 border border-slate-100 leading-relaxed text-[12px] text-slate-600">已更新价格带为15-50元。正在执行首次全网商机扫描...</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-xs text-white">🎯</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">AI商机选品Agent · 09:48</p>
+              <div class="inline-block rounded-2xl bg-white px-4 py-3 border border-slate-100 shadow-sm leading-relaxed max-w-full">
+                <p class="font-semibold mb-2">🔥 今日商机推荐（已筛选8款）</p>
+                <div class="space-y-2 mb-3">
+                  <div class="p-2 rounded-lg bg-slate-50 border border-slate-100"><div class="flex items-center justify-between mb-1"><span class="font-medium text-[12px]">磁吸垃圾袋收纳盒</span><span class="text-[10px] px-1.5 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-100">热度↑156%</span></div><div class="flex gap-3 text-[11px] text-slate-500"><span>售价 ¥24.9</span><span>成本 ¥6.2</span><span>毛利 75%</span><span>竞品 32家</span></div></div>
+                  <div class="p-2 rounded-lg bg-slate-50 border border-slate-100"><div class="flex items-center justify-between mb-1"><span class="font-medium text-[12px]">硅胶折叠水壶 户外便携</span><span class="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-600 border border-amber-100">热度↑89%</span></div><div class="flex gap-3 text-[11px] text-slate-500"><span>售价 ¥39.9</span><span>成本 ¥11.5</span><span>毛利 71%</span><span>竞品 18家</span></div></div>
+                  <div class="p-2 rounded-lg bg-slate-50 border border-slate-100"><div class="flex items-center justify-between mb-1"><span class="font-medium text-[12px]">不锈钢沥水筷笼 壁挂式</span><span class="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-600 border border-amber-100">热度↑67%</span></div><div class="flex gap-3 text-[11px] text-slate-500"><span>售价 ¥19.9</span><span>成本 ¥4.8</span><span>毛利 76%</span><span>竞品 45家</span></div></div>
+                </div>
+                <p class="text-[12px] text-slate-700">请选择要上架的商品。</p>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 justify-end">
+            <div class="max-w-[72%] text-right"><p class="text-xs text-slate-400 mb-1">陈</p><div class="inline-block rounded-2xl bg-indigo-500 px-4 py-3 text-white shadow-sm text-left leading-relaxed">3个都要，帮我一键上架。</div></div>
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-500 text-[11px] font-semibold text-white">陈</div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-xs text-white">🎯</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">AI商机选品Agent · 09:52</p>
+              <div class="inline-block rounded-2xl bg-white px-4 py-3 border border-slate-100 shadow-sm leading-relaxed max-w-full">
+                <div class="mb-2 p-2.5 rounded-lg bg-emerald-50 border border-emerald-100 text-[12px] text-emerald-800">✅ 3款商品已全部上架成功！</div>
+                <div class="text-[12px] space-y-1 text-slate-700 mb-2"><p>• 标题SEO优化 — 3/3 完成</p><p>• 类目属性补全 — 3/3 完成</p><p>• 主图上传 — 9张/9张 完成</p></div>
+                <p class="text-[12px] text-slate-500">7天后自动追踪动销数据，反哺选品策略。明天8:00继续推送。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== 商品诊断&优化Agent ========== -->
+        <div data-panel="diagnosis" class="space-y-5 hidden">
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-violet-500 text-xs text-white">🔍</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">商品诊断&优化Agent · 10:42</p>
+              <div class="inline-block rounded-2xl bg-slate-50 px-4 py-3 border border-slate-100 leading-relaxed">正在对全店商品进行体检...<br/><span class="text-[12px] text-slate-500">并行拉取：质量分 / 罗盘诊断 / 搜索诊断</span></div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-violet-500 text-xs text-white">🔍</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">商品诊断&优化Agent · 10:45</p>
+              <div class="inline-block rounded-2xl bg-white px-4 py-3 border border-slate-100 shadow-sm leading-relaxed max-w-full">
+                <p class="font-semibold mb-2">📊 全店体检完成 — 50个在架商品</p>
+                <div class="grid grid-cols-4 gap-2 mb-3 text-center text-[11px]">
+                  <div class="p-2 rounded-lg bg-red-50 border border-red-100"><p class="text-lg font-bold text-red-600">6</p><p class="text-red-700">P0 紧急</p></div>
+                  <div class="p-2 rounded-lg bg-amber-50 border border-amber-100"><p class="text-lg font-bold text-amber-600">18</p><p class="text-amber-700">P1 优化</p></div>
+                  <div class="p-2 rounded-lg bg-slate-50 border border-slate-200"><p class="text-lg font-bold text-slate-600">5</p><p class="text-slate-700">P2 去留</p></div>
+                  <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-100"><p class="text-lg font-bold text-emerald-600">21</p><p class="text-emerald-700">P3 健康</p></div>
+                </div>
+                <p class="font-medium mb-2">🚨 建议做3件事：</p>
+                <div class="space-y-1.5 text-[12px] text-slate-700 mb-3">
+                  <div class="p-2 rounded-lg border border-red-100 bg-red-50/50"><p class="font-medium text-red-700">事项1 — P0修复（6品）</p><p class="text-[11px]">标题/主图/属性集中缺陷，一键批量修复</p></div>
+                  <div class="p-2 rounded-lg border border-amber-100 bg-amber-50/50"><p class="font-medium text-amber-700">事项2 — P1优化（18品）</p><p class="text-[11px]">主图优化5个 / 标题9个 / 属性7个 / 运费险4个</p></div>
+                  <div class="p-2 rounded-lg border border-slate-200 bg-slate-50"><p class="font-medium text-slate-700">事项3 — 下架3个（质量分&lt;40）</p><p class="text-[11px]">上架超30天无成交，释放权重</p></div>
+                </div>
+                <p class="text-[12px]">P0+P1我可以一键批量执行，<span class="font-medium">确认吗？</span></p>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 justify-end">
+            <div class="max-w-[72%] text-right"><p class="text-xs text-slate-400 mb-1">陈</p><div class="inline-block rounded-2xl bg-indigo-500 px-4 py-3 text-white shadow-sm text-left leading-relaxed">全部帮我改，低质量品直接下架。</div></div>
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-500 text-[11px] font-semibold text-white">陈</div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-violet-500 text-xs text-white">🔍</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">商品诊断&优化Agent · 10:58</p>
+              <div class="inline-block rounded-2xl bg-white px-4 py-3 border border-slate-100 shadow-sm leading-relaxed max-w-full">
+                <div class="mb-2 p-2.5 rounded-lg bg-emerald-50 border border-emerald-100 text-[12px] text-emerald-800">✅ 批量执行完成！处理27个商品</div>
+                <div class="text-[12px] space-y-1 text-slate-700 mb-2"><p>• 标题优化 21个 — ✅19成功 / ⚠️2需人工</p><p>• 属性补全 15个 — ✅13全补 / 🟡2需确认</p><p>• 主图生成 9个 — 已提交，30分钟出图</p><p>• 运费险 4个 — ✅全部成功</p><p>• 下架 3个 — ✅完成</p></div>
+                <div class="p-2 rounded-lg bg-indigo-50 border border-indigo-100 text-[12px] text-indigo-800 mb-2">📈 预估：P0均分 58→72 / P1均分 66→78 / 全店 64→71</div>
+                <p class="text-[12px] text-slate-500">建议3天后复检。</p>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-violet-500 text-xs text-white">🔍</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">商品诊断&优化Agent · 5天后自动复检</p>
+              <div class="inline-block rounded-2xl bg-white px-4 py-3 border border-slate-100 shadow-sm leading-relaxed max-w-full">
+                <p class="font-semibold mb-2">📊 复检 — 标签迁移追踪</p>
+                <div class="grid grid-cols-2 gap-2 mb-3 text-[11px]">
+                  <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-100 text-center"><p class="text-base font-bold text-emerald-600">64→73分</p><p class="text-emerald-700">全店质量分 ⬆️+9</p></div>
+                  <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-100 text-center"><p class="text-base font-bold text-emerald-600">11→4个</p><p class="text-emerald-700">不及格品 ⬇️-7</p></div>
+                </div>
+                <div class="text-[12px] space-y-1 text-slate-700">
+                  <p class="text-emerald-700 font-medium">✅ 正向迁移14品</p><p class="text-[11px] pl-2">高曝低转→高曝高转 3个 / 低曝高转→高曝高转 5个 / 无曝光→有曝光 4个 等</p>
+                  <p class="text-amber-700 font-medium mt-1">🟡 未迁移8品</p>
+                  <p class="text-red-700 font-medium mt-1">🔴 负向迁移1品</p><p class="text-[11px] pl-2">磁吸保鲜膜收纳架 疑似竞品降价，要做深度诊断吗？</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 justify-end">
+            <div class="max-w-[72%] text-right"><p class="text-xs text-slate-400 mb-1">陈</p><div class="inline-block rounded-2xl bg-indigo-500 px-4 py-3 text-white shadow-sm text-left leading-relaxed">对，赶紧看看怎么回事。</div></div>
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-500 text-[11px] font-semibold text-white">陈</div>
+          </div>
+        </div>
+
+        <!-- ========== AI商品套图生成Agent ========== -->
+        <div data-panel="images" class="space-y-5 hidden">
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-pink-500 text-xs text-white">🎨</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">AI商品套图生成Agent · 11:20</p>
+              <div class="inline-block rounded-2xl bg-white px-4 py-3 border border-slate-100 shadow-sm leading-relaxed max-w-full">
+                <div class="mb-2 p-2.5 rounded-lg bg-pink-50 border border-pink-100 text-[12px] text-pink-800">✅ 已获取商品信息，正在采集同叶子类目爆款图...</div>
+                <p class="text-[12px] text-slate-700">已读取「磁吸垃圾袋收纳盒」的标题/属性/卖点，同时抓取该叶子类目下点击率Top50商品的主图、详情图、白底图。</p>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-pink-500 text-xs text-white">🎨</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">AI商品套图生成Agent · 11:23</p>
+              <div class="inline-block rounded-2xl bg-white px-4 py-3 border border-slate-100 shadow-sm leading-relaxed max-w-full">
+                <p class="font-semibold mb-2">🔍 爆款图拆解完成</p>
+                <div class="text-[12px] space-y-1 text-slate-700 mb-3">
+                  <p class="font-medium">该类目「高转化视觉公式」：</p>
+                  <p>• 主图：实物场景图 + 白色/浅灰背景 + 功能标注（磁吸/大容量）</p>
+                  <p>• 详情首图：痛点对比图（乱 vs 整齐）+ 尺寸标注</p>
+                  <p>• 配色：偏莫兰迪色系，点缀亮色CTA</p>
+                </div>
+                <p class="font-medium mb-2">已生成3套风格方案供选择：</p>
+                <div class="grid grid-cols-3 gap-2 mb-3">
+                  <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 text-center"><div class="h-16 rounded bg-gradient-to-b from-slate-100 to-slate-200 mb-2 flex items-center justify-center text-[11px] text-slate-500">极简白底</div><p class="text-[11px] text-slate-600">方案A</p></div>
+                  <div class="p-3 rounded-lg bg-pink-50 border border-pink-200 text-center"><div class="h-16 rounded bg-gradient-to-b from-pink-50 to-pink-100 mb-2 flex items-center justify-center text-[11px] text-pink-500">场景生活风</div><p class="text-[11px] text-pink-600 font-medium">方案B · 推荐</p></div>
+                  <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 text-center"><div class="h-16 rounded bg-gradient-to-b from-amber-50 to-amber-100 mb-2 flex items-center justify-center text-[11px] text-amber-600">功能对比图</div><p class="text-[11px] text-slate-600">方案C</p></div>
+                </div>
+                <p class="text-[12px] text-slate-700">选择一个风格方向，我来批量生成全套图。</p>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 justify-end">
+            <div class="max-w-[72%] text-right"><p class="text-xs text-slate-400 mb-1">陈</p><div class="inline-block rounded-2xl bg-indigo-500 px-4 py-3 text-white shadow-sm text-left leading-relaxed">B方案场景风，主图用这个风格。</div></div>
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-500 text-[11px] font-semibold text-white">陈</div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-pink-500 text-xs text-white">🎨</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">AI商品套图生成Agent · 11:31</p>
+              <div class="inline-block rounded-2xl bg-white px-4 py-3 border border-slate-100 shadow-sm leading-relaxed max-w-full">
+                <div class="mb-2 p-2.5 rounded-lg bg-emerald-50 border border-emerald-100 text-[12px] text-emerald-800">✅ 全套图生成完成！</div>
+                <div class="text-[12px] space-y-1 text-slate-700 mb-2">
+                  <p>• 主图 ×5（800×800 已适配抖店）</p>
+                  <p>• 详情图 ×10（750宽 已适配）</p>
+                  <p>• 白底图 ×1</p>
+                  <p>• 规格图 ×2（按SKU颜色分）</p>
+                </div>
+                <p class="text-[12px] text-slate-700">请预览确认。如需调整可标注「换背景」「改文案」等指令，我局部重新生成。</p>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 justify-end">
+            <div class="max-w-[72%] text-right"><p class="text-xs text-slate-400 mb-1">陈</p><div class="inline-block rounded-2xl bg-indigo-500 px-4 py-3 text-white shadow-sm text-left leading-relaxed">第3张主图背景换成厨房场景，其他没问题，直接替换上去。</div></div>
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-500 text-[11px] font-semibold text-white">陈</div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-pink-500 text-xs text-white">🎨</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">AI商品套图生成Agent · 11:33</p>
+              <div class="inline-block rounded-2xl bg-white px-4 py-3 border border-slate-100 shadow-sm leading-relaxed max-w-full">
+                <div class="mb-2 p-2.5 rounded-lg bg-emerald-50 border border-emerald-100 text-[12px] text-emerald-800">✅ 第3张主图已重新生成（厨房场景）<br/>✅ 全套图已替换至商品链接</div>
+                <p class="text-[12px] text-slate-500">7天后自动追踪主图点击率变化，有效风格将纳入你的「视觉基准库」复用。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== 评论卖点分析Agent ========== -->
+        <div data-panel="reviews" class="space-y-5 hidden">
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-500 text-xs text-white">💬</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">评论卖点分析Agent · 14:00</p>
+              <div class="inline-block rounded-2xl bg-slate-50 px-4 py-3 border border-slate-100 leading-relaxed">
+                你好！请提供评论数据来源：<br/><br/>
+                <span class="text-[12px]">① 授权读取本店商品评论<br/>② 输入竞品链接，我自动抓取<br/>③ 上传已有评论数据文件</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 justify-end">
+            <div class="max-w-[72%] text-right"><p class="text-xs text-slate-400 mb-1">陈</p><div class="inline-block rounded-2xl bg-indigo-500 px-4 py-3 text-white shadow-sm text-left leading-relaxed">用我本店的评论，再加这两个竞品链接：[竞品A链接] [竞品B链接]</div></div>
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-500 text-[11px] font-semibold text-white">陈</div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-500 text-xs text-white">💬</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">评论卖点分析Agent · 14:08</p>
+              <div class="inline-block rounded-2xl bg-white px-4 py-3 border border-slate-100 shadow-sm leading-relaxed max-w-full">
+                <div class="mb-2 p-2.5 rounded-lg bg-amber-50 border border-amber-100 text-[12px] text-amber-800">✅ 采集完成：本店 326条 + 竞品A 1,247条 + 竞品B 892条，已过滤水评</div>
+                <p class="font-semibold mb-2">🏆 热销SKU识别</p>
+                <div class="text-[12px] text-slate-700 mb-3 space-y-1">
+                  <p>• 竞品A爆款：「磁吸款-白色大号」— 好评率97%，复购提及率23%</p>
+                  <p>• 竞品B爆款：「免打孔款-灰色」— 好评率95%，复购提及率18%</p>
+                  <p>• 标记为对标对象，进入深度分析...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-500 text-xs text-white">💬</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">评论卖点分析Agent · 14:12</p>
+              <div class="inline-block rounded-2xl bg-white px-4 py-3 border border-slate-100 shadow-sm leading-relaxed max-w-full">
+                <p class="font-semibold mb-2">☁️ 卖点词云报告</p>
+                <div class="flex flex-wrap gap-1.5 mb-3 p-3 rounded-lg bg-slate-50 border border-slate-100">
+                  <span class="px-2 py-1 rounded-full bg-red-100 text-red-700 text-[13px] font-medium">磁吸很牢</span>
+                  <span class="px-2 py-1 rounded-full bg-red-50 text-red-600 text-[12px]">大容量</span>
+                  <span class="px-2 py-1 rounded-full bg-amber-100 text-amber-700 text-[12px] font-medium">不占空间</span>
+                  <span class="px-2 py-1 rounded-full bg-amber-50 text-amber-600 text-[11px]">颜值高</span>
+                  <span class="px-2 py-1 rounded-full bg-blue-50 text-blue-600 text-[11px]">安装方便</span>
+                  <span class="px-2 py-1 rounded-full bg-slate-100 text-slate-600 text-[11px]">材质厚实</span>
+                  <span class="px-2 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px]">密封好</span>
+                  <span class="px-2 py-1 rounded-full bg-slate-50 text-slate-500 text-[10px]">适合出租屋</span>
+                </div>
+                <div class="text-[12px] text-slate-700 mb-3">
+                  <p class="font-medium mb-1">按维度聚类：</p>
+                  <p>• <span class="font-medium text-red-600">功能卖点</span>：磁吸牢固(87%) &gt; 大容量(64%) &gt; 密封(31%)</p>
+                  <p>• <span class="font-medium text-amber-600">使用场景</span>：不占空间(58%) &gt; 适合小厨房(42%)</p>
+                  <p>• <span class="font-medium text-blue-600">情绪表达</span>：颜值高(39%) &gt; 比想象中好(28%)</p>
+                  <p>• <span class="font-medium text-slate-600">痛点吐槽</span>：尺寸偏小(12%) &gt; 颜色偏差(8%)</p>
+                </div>
+                <p class="text-[12px] text-slate-700">请确认你要主打的<span class="font-medium">核心卖点TOP5</span>，我将基于此生成优化策略。</p>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 justify-end">
+            <div class="max-w-[72%] text-right"><p class="text-xs text-slate-400 mb-1">陈</p><div class="inline-block rounded-2xl bg-indigo-500 px-4 py-3 text-white shadow-sm text-left leading-relaxed">主打：磁吸牢固、大容量、不占空间、颜值高、安装方便。</div></div>
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-500 text-[11px] font-semibold text-white">陈</div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-500 text-xs text-white">💬</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">评论卖点分析Agent · 14:15</p>
+              <div class="inline-block rounded-2xl bg-white px-4 py-3 border border-slate-100 shadow-sm leading-relaxed max-w-full">
+                <p class="font-semibold mb-2">📝 内容优化策略（三路联动）</p>
+                <div class="space-y-2 text-[12px] text-slate-700 mb-3">
+                  <div class="p-2 rounded-lg bg-slate-50 border border-slate-100"><p class="font-medium">① 标题改写</p><p class="text-[11px] text-slate-500">植入「磁吸牢固」「大容量」「不占空间」→ 调用诊断Agent标题能力</p></div>
+                  <div class="p-2 rounded-lg bg-slate-50 border border-slate-100"><p class="font-medium">② 套图优化</p><p class="text-[11px] text-slate-500">主图标注「磁吸」卖点 / 详情增加「小厨房场景」→ 调用套图Agent</p></div>
+                  <div class="p-2 rounded-lg bg-slate-50 border border-slate-100"><p class="font-medium">③ 商品属性</p><p class="text-[11px] text-slate-500">补充「安装方式：免打孔磁吸」「容量：大号」→ 属性补全接口</p></div>
+                </div>
+                <div class="p-2 rounded-lg bg-amber-50 border border-amber-100 text-[11px] text-amber-800 mb-2">🔗 跨Agent联动：标题→诊断Agent / 套图→套图Agent / 属性→补全接口</div>
+                <p class="text-[12px] text-slate-700">预览改写前后对比，确认后一键执行？</p>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 justify-end">
+            <div class="max-w-[72%] text-right"><p class="text-xs text-slate-400 mb-1">陈</p><div class="inline-block rounded-2xl bg-indigo-500 px-4 py-3 text-white shadow-sm text-left leading-relaxed">确认，三路一起执行。</div></div>
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-500 text-[11px] font-semibold text-white">陈</div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-500 text-xs text-white">💬</div>
+            <div class="flex-1"><p class="text-xs text-slate-400 mb-1">评论卖点分析Agent · 14:22</p>
+              <div class="inline-block rounded-2xl bg-white px-4 py-3 border border-slate-100 shadow-sm leading-relaxed max-w-full">
+                <div class="mb-2 p-2.5 rounded-lg bg-emerald-50 border border-emerald-100 text-[12px] text-emerald-800">✅ 三路优化全部执行完成！</div>
+                <div class="text-[12px] space-y-1 text-slate-700 mb-2">
+                  <p>• 标题改写 — 3个品已更新（植入卖点关键词）</p>
+                  <p>• 套图优化 — 主图+详情已重生成（含卖点可视化）</p>
+                  <p>• 属性补全 — 安装方式/容量/适用场景 已补充</p>
+                </div>
+                <p class="text-[12px] text-slate-500">持续监控：若新评论中消费者关注点发生漂移，自动触发新一轮分析并推送更新建议。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- INPUT -->
+      <div class="border-t border-slate-100 bg-slate-50/60 px-4 py-3">
+        <div class="flex items-end gap-2">
+          <textarea rows="2" class="flex-1 resize-none rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 shadow-inner focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400" placeholder="输入你的需求..."></textarea>
+          <button class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500 text-white shadow hover:bg-indigo-600 transition">➤</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== RIGHT PANEL ====== -->
+    <aside class="col-span-3 bg-slate-50/60 flex flex-col overflow-y-auto">
+
+      <!-- 服务市场AI助手 -->
+      <div data-info="assistant">
+        <div class="px-4 pt-3 pb-3 border-b border-slate-100">
+          <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-2">📱 应用信息</p>
+          <div class="rounded-lg bg-white px-3 py-3 border border-slate-100"><div class="flex items-center gap-2 mb-2"><div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-sky-500 text-white text-sm">🤖</div><div><p class="text-[12px] font-medium text-slate-800">服务市场AI助手</p><p class="text-[10px] text-slate-500">官方 · v1.0</p></div></div><div class="flex items-center gap-2 text-[10px]"><span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-600 px-2 py-0.5 border border-emerald-100"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>运行中</span></div></div>
+        </div>
+        <div class="px-4 pt-3 pb-3 border-b border-slate-100">
+          <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-2">📊 Token用量</p>
+          <div class="rounded-lg bg-white px-3 py-3 border border-slate-100 text-[12px]"><div class="flex justify-between mb-1 text-slate-600"><span>本月已调用</span><span class="font-semibold text-indigo-600">328次</span></div><div class="flex justify-between mb-2 text-slate-600"><span>剩余</span><span class="font-semibold text-slate-800">9,672次</span></div><div class="w-full h-1.5 rounded-full bg-slate-100"><div class="h-full rounded-full bg-indigo-500" style="width:3.3%"></div></div></div>
+        </div>
+        <div class="px-4 pt-3 pb-4"><p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-2">🏪 ISV 扩展区</p><p class="text-[11px] text-slate-400 text-center py-4">官方助手暂无ISV扩展</p></div>
+      </div>
+
+      <!-- AI商机选品 -->
+      <div data-info="selection" class="hidden">
+        <div class="px-4 pt-3 pb-3 border-b border-slate-100">
+          <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-2">📱 应用信息</p>
+          <div class="rounded-lg bg-white px-3 py-3 border border-slate-100"><div class="flex items-center gap-2 mb-2"><div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500 text-white text-sm">🎯</div><div><p class="text-[12px] font-medium text-slate-800">AI商机选品Agent</p><p class="text-[10px] text-slate-500">ISV: 智选科技 · v2.1</p></div></div><div class="flex items-center gap-2 text-[10px]"><span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-600 px-2 py-0.5 border border-emerald-100"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>运行中</span></div></div>
+        </div>
+        <div class="px-4 pt-3 pb-3 border-b border-slate-100">
+          <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-2">📊 Token用量</p>
+          <div class="rounded-lg bg-white px-3 py-3 border border-slate-100 text-[12px]"><div class="flex justify-between mb-1 text-slate-600"><span>本月已调用</span><span class="font-semibold text-indigo-600">1,247次</span></div><div class="flex justify-between mb-2 text-slate-600"><span>剩余</span><span class="font-semibold text-slate-800">3,753次</span></div><div class="w-full h-1.5 rounded-full bg-slate-100"><div class="h-full rounded-full bg-indigo-500" style="width:25%"></div></div></div>
+        </div>
+        <div class="px-4 pt-3 pb-4">
+          <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-2">🏪 ISV 扩展区</p>
+          <div class="space-y-2 text-xs">
+            <div class="rounded-lg bg-white px-3 py-2 border border-slate-100"><div class="flex items-center justify-between"><div><p class="text-[12px] font-medium text-slate-800">⏰ 每日商机扫描</p><p class="text-[10px] text-slate-500">每天 08:00</p></div><span class="inline-flex h-5 w-9 items-center rounded-full bg-emerald-500"><span class="inline-block h-4 w-4 transform translate-x-5 rounded-full bg-white shadow"></span></span></div></div>
+            <div class="rounded-lg bg-white px-3 py-2.5 border border-slate-100"><p class="text-[11px] font-medium text-slate-700 mb-1">📊 本周选品</p><div class="grid grid-cols-3 gap-1 text-center"><div><p class="text-sm font-bold text-indigo-600">38</p><p class="text-[10px] text-slate-500">推荐</p></div><div><p class="text-sm font-bold text-emerald-600">12</p><p class="text-[10px] text-slate-500">上架</p></div><div><p class="text-sm font-bold text-amber-600">67%</p><p class="text-[10px] text-slate-500">采纳率</p></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 商品诊断&优化 -->
+      <div data-info="diagnosis" class="hidden">
+        <div class="px-4 pt-3 pb-3 border-b border-slate-100">
+          <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-2">📱 应用信息</p>
+          <div class="rounded-lg bg-white px-3 py-3 border border-slate-100"><div class="flex items-center gap-2 mb-2"><div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500 text-white text-sm">🔍</div><div><p class="text-[12px] font-medium text-slate-800">商品诊断&优化Agent</p><p class="text-[10px] text-slate-500">ISV: 数智优品 · v3.0</p></div></div><div class="flex items-center gap-2 text-[10px]"><span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-600 px-2 py-0.5 border border-emerald-100"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>运行中</span></div></div>
+        </div>
+        <div class="px-4 pt-3 pb-3 border-b border-slate-100">
+          <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-2">📊 Token用量</p>
+          <div class="rounded-lg bg-white px-3 py-3 border border-slate-100 text-[12px]"><div class="flex justify-between mb-1 text-slate-600"><span>本月已调用</span><span class="font-semibold text-indigo-600">2,856次</span></div><div class="flex justify-between mb-2 text-slate-600"><span>剩余</span><span class="font-semibold text-slate-800">7,144次</span></div><div class="w-full h-1.5 rounded-full bg-slate-100"><div class="h-full rounded-full bg-indigo-500" style="width:29%"></div></div></div>
+        </div>
+        <div class="px-4 pt-3 pb-4">
+          <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-2">🏪 ISV 扩展区</p>
+          <div class="space-y-2 text-xs">
+            <div class="rounded-lg bg-white px-3 py-2 border border-slate-100"><div class="flex items-center justify-between"><div><p class="text-[12px] font-medium text-slate-800">⏰ 每周自动体检</p><p class="text-[10px] text-slate-500">每周一 09:00</p></div><span class="inline-flex h-5 w-9 items-center rounded-full bg-emerald-500"><span class="inline-block h-4 w-4 transform translate-x-5 rounded-full bg-white shadow"></span></span></div></div>
+            <div class="rounded-lg bg-white px-3 py-2.5 border border-slate-100"><p class="text-[11px] font-medium text-slate-700 mb-1">📊 经营概况</p><div class="grid grid-cols-2 gap-1 text-center"><div><p class="text-sm font-bold text-indigo-600">50</p><p class="text-[10px] text-slate-500">在架</p></div><div><p class="text-sm font-bold text-emerald-600">73</p><p class="text-[10px] text-slate-500">均分</p></div><div><p class="text-sm font-bold text-amber-600">14</p><p class="text-[10px] text-slate-500">正向迁移</p></div><div><p class="text-sm font-bold text-red-600">1</p><p class="text-[10px] text-slate-500">预警</p></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI商品套图生成 -->
+      <div data-info="images" class="hidden">
+        <div class="px-4 pt-3 pb-3 border-b border-slate-100">
+          <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-2">📱 应用信息</p>
+          <div class="rounded-lg bg-white px-3 py-3 border border-slate-100"><div class="flex items-center gap-2 mb-2"><div class="flex h-8 w-8 items-center justify-center rounded-lg bg-pink-500 text-white text-sm">🎨</div><div><p class="text-[12px] font-medium text-slate-800">AI商品套图生成Agent</p><p class="text-[10px] text-slate-500">ISV: 视觉魔方 · v1.8</p></div></div><div class="flex items-center gap-2 text-[10px]"><span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-600 px-2 py-0.5 border border-emerald-100"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>运行中</span></div></div>
+        </div>
+        <div class="px-4 pt-3 pb-3 border-b border-slate-100">
+          <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-2">📊 Token用量</p>
+          <div class="rounded-lg bg-white px-3 py-3 border border-slate-100 text-[12px]"><div class="flex justify-between mb-1 text-slate-600"><span>本月已调用</span><span class="font-semibold text-indigo-600">586次</span></div><div class="flex justify-between mb-2 text-slate-600"><span>剩余</span><span class="font-semibold text-slate-800">2,414次</span></div><div class="w-full h-1.5 rounded-full bg-slate-100"><div class="h-full rounded-full bg-indigo-500" style="width:20%"></div></div></div>
+        </div>
+        <div class="px-4 pt-3 pb-4">
+          <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-2">🏪 ISV 扩展区</p>
+          <div class="space-y-2 text-xs">
+            <div class="rounded-lg bg-white px-3 py-2 border border-slate-100"><div class="flex items-center justify-between"><div><p class="text-[12px] font-medium text-slate-800">⏰ 类目爆款图监控</p><p class="text-[10px] text-slate-500">每日 06:00更新</p></div><span class="inline-flex h-5 w-9 items-center rounded-full bg-emerald-500"><span class="inline-block h-4 w-4 transform translate-x-5 rounded-full bg-white shadow"></span></span></div></div>
+            <div class="rounded-lg bg-white px-3 py-2 border border-slate-100"><div class="flex items-center justify-between"><div><p class="text-[12px] font-medium text-slate-800">📈 点击率追踪</p><p class="text-[10px] text-slate-500">替换后7天自动</p></div><span class="inline-flex h-5 w-9 items-center rounded-full bg-emerald-500"><span class="inline-block h-4 w-4 transform translate-x-5 rounded-full bg-white shadow"></span></span></div></div>
+            <div class="rounded-lg bg-white px-3 py-2.5 border border-slate-100"><p class="text-[11px] font-medium text-slate-700 mb-1">📊 生成统计</p><div class="grid grid-cols-3 gap-1 text-center"><div><p class="text-sm font-bold text-indigo-600">156</p><p class="text-[10px] text-slate-500">生成图</p></div><div><p class="text-sm font-bold text-emerald-600">89%</p><p class="text-[10px] text-slate-500">采纳率</p></div><div><p class="text-sm font-bold text-amber-600">+23%</p><p class="text-[10px] text-slate-500">点击率↑</p></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 评论卖点分析 -->
+      <div data-info="reviews" class="hidden">
+        <div class="px-4 pt-3 pb-3 border-b border-slate-100">
+          <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-2">📱 应用信息</p>
+          <div class="rounded-lg bg-white px-3 py-3 border border-slate-100"><div class="flex items-center gap-2 mb-2"><div class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500 text-white text-sm">💬</div><div><p class="text-[12px] font-medium text-slate-800">评论卖点分析Agent</p><p class="text-[10px] text-slate-500">ISV: 言智科技 · v2.0</p></div></div><div class="flex items-center gap-2 text-[10px]"><span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-600 px-2 py-0.5 border border-emerald-100"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>运行中</span></div></div>
+        </div>
+        <div class="px-4 pt-3 pb-3 border-b border-slate-100">
+          <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-2">📊 Token用量</p>
+          <div class="rounded-lg bg-white px-3 py-3 border border-slate-100 text-[12px]"><div class="flex justify-between mb-1 text-slate-600"><span>本月已调用</span><span class="font-semibold text-indigo-600">743次</span></div><div class="flex justify-between mb-2 text-slate-600"><span>剩余</span><span class="font-semibold text-slate-800">4,257次</span></div><div class="w-full h-1.5 rounded-full bg-slate-100"><div class="h-full rounded-full bg-indigo-500" style="width:15%"></div></div></div>
+        </div>
+        <div class="px-4 pt-3 pb-4">
+          <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-2">🏪 ISV 扩展区</p>
+          <div class="space-y-2 text-xs">
+            <div class="rounded-lg bg-white px-3 py-2 border border-slate-100"><div class="flex items-center justify-between"><div><p class="text-[12px] font-medium text-slate-800">🔔 关键词漂移预警</p><p class="text-[10px] text-slate-500">每周监控新增评论</p></div><span class="inline-flex h-5 w-9 items-center rounded-full bg-emerald-500"><span class="inline-block h-4 w-4 transform translate-x-5 rounded-full bg-white shadow"></span></span></div></div>
+            <div class="rounded-lg bg-white px-3 py-2.5 border border-slate-100"><p class="text-[11px] font-medium text-slate-700 mb-1">📊 分析概况</p><div class="grid grid-cols-3 gap-1 text-center"><div><p class="text-sm font-bold text-indigo-600">2,465</p><p class="text-[10px] text-slate-500">评论</p></div><div><p class="text-sm font-bold text-emerald-600">5</p><p class="text-[10px] text-slate-500">核心卖点</p></div><div><p class="text-sm font-bold text-amber-600">3</p><p class="text-[10px] text-slate-500">Agent联动</p></div></div></div>
+            <div class="rounded-lg bg-white px-3 py-2.5 border border-slate-100"><p class="text-[11px] font-medium text-slate-700 mb-1">🔗 联动状态</p><div class="space-y-1 text-[11px]"><p class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>诊断Agent → 标题改写 ✅</p><p class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>套图Agent → 卖点可视化 ✅</p><p class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>属性接口 → 卖点补全 ✅</p></div></div>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+</div>
+</section>
+</main>
+
+<script>
+(function(){
+  var btns=document.querySelectorAll('[data-conv]'),
+      panels=document.querySelectorAll('[data-panel]'),
+      infos=document.querySelectorAll('[data-info]'),
+      lbl=document.getElementById('curLabel'),
+      tAv=document.getElementById('topAv'),
+      tT=document.getElementById('topT'),
+      tD=document.getElementById('topD'),
+      tTag=document.getElementById('topTag');
+  var C={
+    assistant:{l:'服务市场AI助手',a:'🤖',d:'需求收集 · Agent推荐',c:'indigo',tag:'官方'},
+    selection:{l:'AI商机选品Agent',a:'🎯',d:'商机扫描 · 智能选品 · 一键铺货',c:'emerald',tag:'ISV'},
+    diagnosis:{l:'商品诊断&优化Agent',a:'🔍',d:'全店体检 · 批量优化 · 标签迁移',c:'violet',tag:'ISV'},
+    images:{l:'AI商品套图生成Agent',a:'🎨',d:'爆款图复刻 · 全套图生成 · 一键替换',c:'pink',tag:'ISV'},
+    reviews:{l:'评论卖点分析Agent',a:'💬',d:'卖点挖掘 · 词云生成 · 跨Agent联动',c:'amber',tag:'ISV'}
+  };
+  btns.forEach(function(b){b.addEventListener('click',function(){
+    var k=b.dataset.conv,c=C[k];if(!c)return;
+    btns.forEach(function(x){x.classList.remove('conv-active')});b.classList.add('conv-active');
+    panels.forEach(function(p){p.classList.toggle('hidden',p.dataset.panel!==k)});
+    infos.forEach(function(i){i.classList.toggle('hidden',i.dataset.info!==k)});
+    lbl.textContent=c.l;tAv.textContent=c.a;tT.textContent=c.l;tD.textContent=c.d;
+    tTag.innerHTML='<span class="inline-flex items-center gap-1 rounded-full bg-'+c.c+'-50 px-2 py-1 text-'+c.c+'-600 border border-'+c.c+'-100"><span class="w-1.5 h-1.5 rounded-full bg-'+c.c+'-500"></span>'+c.tag+'</span>';
+  })});
+})();
+</script>
+</body>
+</html>
