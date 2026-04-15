@@ -1,6 +1,6 @@
 {
-  "name": "ai-agent-workbench-demo",
-  "version": "1.0.0",
-  "description": "抖店服务市场 AI Agent 工作台 Demo",
+  "name": "ai-agent-workbench-demo-v3",
+  "version": "3.0.0",
+  "description": "抖店服务市场 AI Agent 工作台 · 完整链路Demo（搜索→订购→授权→对话）",
   "private": true
 }
